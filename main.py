@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from typing import Optional, Tuple, Union, List, Dict, Any
 from dataclasses import dataclass
 import os
+import secrets
 
 class SiLU(nn.Module):
     def forward(self, x):
@@ -674,9 +675,7 @@ class EfficientMemoryManager:
             scores = {k: self.importance_scores[k] * (1 + self.access_times[k]) for k in self.memory_chunks}
             key_to_evict = min(scores, key=scores.get)
         else:
-            # Default to random eviction
-            import random
-            key_to_evict = random.choice(list(self.memory_chunks.keys()))
+            key_to_evict = secrets.choice(list(self.memory_chunks.keys()))
         
         del self.memory_chunks[key_to_evict]
         del self.access_times[key_to_evict]
